@@ -74,7 +74,7 @@ export default function Main({ wallet, disconnect, worldId }: MainProps) {
         </Button>
       </div>
       <div className="fixed top-14 right-0 left-0 bottom-0">
-        {current.hasTag("showRenderer") ? (
+        {current.hasTag("showRenderer") && !current.matches("error") ? (
           current.matches("Complete with Profile") ? (
             renderer({
               profileId: current.context.profileId!,
@@ -88,6 +88,7 @@ export default function Main({ wallet, disconnect, worldId }: MainProps) {
             <p className="text-xl font-bold">Loading profile...</p>
           </div>
         )}
+
       </div>
     </div>
   );

@@ -198,7 +198,7 @@ export class WorldScene extends WarpableScene {
     };
   }
 
-  preload() {}
+  preload() { }
 
   create() {
     this.camera = this.cameras.main;
@@ -396,17 +396,17 @@ export class WorldScene extends WarpableScene {
     const spriteData =
       entity.Metadata?.SpriteTxId !== undefined
         ? {
-            sprite: entity.Metadata?.SpriteTxId,
-            atlas: entity.Metadata?.SpriteAtlasTxId,
-          }
+          sprite: entity.Metadata?.SpriteTxId,
+          atlas: entity.Metadata?.SpriteAtlasTxId,
+        }
         : isPlayer &&
-            this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteTxId !==
-              undefined
+          this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteTxId !==
+          undefined
           ? {
-              sprite: this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteTxId,
-              atlas:
-                this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteAtlasTxId,
-            }
+            sprite: this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteTxId,
+            atlas:
+              this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteAtlasTxId,
+          }
           : undefined;
 
     return spriteData !== undefined
@@ -835,8 +835,8 @@ export class WorldScene extends WarpableScene {
 
     const resolvedProfile =
       (isPlayer ? this.playerProfileInfo : undefined) ?? profile;
-    const displayText =
-      entity.Metadata?.DisplayName ??
+    const displayText = ""
+    entity.Metadata?.DisplayName ??
       resolvedProfile?.DisplayName ??
       resolvedProfile?.Username ??
       truncateAddress(entityId, 4, 3, "…");
@@ -1002,9 +1002,8 @@ export class WorldScene extends WarpableScene {
       playerBody.setVelocityY(0);
     }
 
-    const direction = `${
-      isUp ? "up" : isDown ? "down" : ""
-    }${(isLeft || isRight) && (isUp || isDown) ? "_" : ""}${isLeft ? "left" : isRight ? "right" : ""}`;
+    const direction = `${isUp ? "up" : isDown ? "down" : ""
+      }${(isLeft || isRight) && (isUp || isDown) ? "_" : ""}${isLeft ? "left" : isRight ? "right" : ""}`;
     const isMoving = isLeft || isRight || isUp || isDown;
 
     const changeAni =

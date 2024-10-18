@@ -67,8 +67,8 @@ export default function TutorialOverlay({ close }: FormOverlayProps) {
               </div>
             ) : (
               <div className="flex flex-row justify-evenly items-center gap-4 pt-4 pb-10 h-32">
-                <div>Find the Llama King and beg him for $LLAMA!</div>
-                <img src="assets/tutorial/click_king.png" width={100} />
+                <div>Find the Fisher King and buy some Casts!</div>
+                <img src="assets/tutorial/click_fisherKing.png" width={100} />
               </div>
             )}
           </div>

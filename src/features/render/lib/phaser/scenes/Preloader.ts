@@ -48,9 +48,9 @@ export class Preloader extends WarpableScene {
     this.load.setPath("assets");
 
     // this.load.image('main_bg', 'branding/main_bg.jpg');
-    this.load.image("main_logo", "branding/LLAMA_purple_small.png");
+    this.load.image("main_logo", "branding/RuneRealm_Logo.png");
 
-    this.load.image("coin_icon", "branding/LLAMA_coin_icon.png");
+    this.load.image("coin_icon", "branding/SPLogo.png");
 
     this.load.image("invis", "sprites/invis.png");
     // this.load.image('mona', 'sprites/mona.png');

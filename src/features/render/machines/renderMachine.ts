@@ -140,9 +140,9 @@ export const renderMachine = setup({
       const { loginResult } = params;
       return { loginResult };
     }),
-    showLoginResult: ({ context }) => {
-      context.typedScenes.mainMenu!.showLoginResult(context.loginResult!);
-    },
+    // showLoginResult: ({ context }) => {
+    //   context.typedScenes.mainMenu!.showLoginResult(context.loginResult!);
+    // },
     startWorldScene: (
       { context },
       params: {
@@ -471,10 +471,10 @@ export const renderMachine = setup({
           Position: realityParams["2D-Tile-0"]?.Spawn || [0, 0],
           ...(input.profileInfo?.ProfileId
             ? {
-                Metadata: {
-                  ProfileId: input.profileInfo.ProfileId,
-                },
-              }
+              Metadata: {
+                ProfileId: input.profileInfo.ProfileId,
+              },
+            }
             : {}),
         });
         return msgId;

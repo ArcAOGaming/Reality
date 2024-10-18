@@ -52,7 +52,7 @@ export class MainMenu extends WarpableScene {
     // dont pass in, just call it
     setTimeout(cb, 100);
     ReactDOM.createRoot(memElement).render(
-      <ButtonOnce elementSize={buttonSize} children="Entering Llama Land!" />,
+      <ButtonOnce elementSize={buttonSize} children="Entering Rune Realm!" />,
     );
 
     this.warpButton = this.add
