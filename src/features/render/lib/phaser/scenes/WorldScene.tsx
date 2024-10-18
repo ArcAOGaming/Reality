@@ -23,6 +23,8 @@ import { ChatMessageHistory } from "@/features/chat/contract/model";
 import TutorialOverlay from "@/features/render/components/TutorialOverlay";
 import { AudioParams } from "@/features/reality/contract/audio";
 
+import { gameStateStore } from "@/lib/gameStateStore";
+
 const SCALE_TILES = 3;
 const SCALE_ENTITIES = 2;
 
@@ -77,6 +79,7 @@ export class WorldScene extends WarpableScene {
 
   lastTickMoving: boolean = false;
   lastTickDirection: string = "down";
+  lastTickRunning: boolean = false;
 
   isWarping: boolean = false;
   warpCooldown: boolean = false;
@@ -91,9 +94,9 @@ export class WorldScene extends WarpableScene {
   tutorial?: Phaser.GameObjects.DOMElement;
   schemaForm?: Phaser.GameObjects.DOMElement;
 
-  slowMs: number = 144;
-  fastMs: number = 144;
-  // fastMs: number = 192;
+  slowMs: number = 160;
+  normalMs: number = 160;
+  fastMs: number = 320;
 
   constructor() {
     super("WorldScene");
@@ -148,15 +151,17 @@ export class WorldScene extends WarpableScene {
           right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
           up: Phaser.Input.Keyboard.KeyCodes.UP,
           down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+          shift: Phaser.Input.Keyboard.KeyCodes.SHIFT, // Shift for running
         },
         false,
       );
       this.wasd = keyboard.addKeys(
         {
-          // left: Phaser.Input.Keyboard.KeyCodes.A,
-          // right: Phaser.Input.Keyboard.KeyCodes.D,
-          // up: Phaser.Input.Keyboard.KeyCodes.W,
-          // down: Phaser.Input.Keyboard.KeyCodes.S,
+          left: Phaser.Input.Keyboard.KeyCodes.A,
+          right: Phaser.Input.Keyboard.KeyCodes.D,
+          up: Phaser.Input.Keyboard.KeyCodes.W,
+          down: Phaser.Input.Keyboard.KeyCodes.S,
+          shift: Phaser.Input.Keyboard.KeyCodes.SHIFT, // Shift for running
         },
         false,
       );
@@ -384,7 +389,7 @@ export class WorldScene extends WarpableScene {
     }
 
     // Only show tutorial if it's not done
-    if (localStorage.getItem("tutorialDone") === null) {
+    if (localStorage.getItem("tutorialDone_2") === null) {
       this.time.delayedCall(500, this.showTutorial, [], this);
     }
 
@@ -970,7 +975,18 @@ export class WorldScene extends WarpableScene {
     if (!this.player) return;
     if (!this.arrows) return;
 
-    const speed = this.isWarping ? this.slowMs : this.fastMs;
+    // Prevent movement if chat is focused
+    if (gameStateStore.getChatFocus()) return;
+
+    // Speed settings
+    const baseSpeed = this.isWarping ? this.slowMs : this.normalMs;
+    const boostSpeed = baseSpeed * (this.fastMs / this.normalMs);
+
+    // Determine the current speed based on whether Shift is held down
+    const isRunning =
+      //@ts-expect-error - Phaser types are wrong
+      (this.arrows?.shift.isDown || this.wasd?.shift?.isDown) ?? false;
+    const speedAbsolute = isRunning ? boostSpeed : baseSpeed;
 
     const isLeft =
       //@ts-expect-error - Phaser types are wrong
@@ -984,37 +1000,42 @@ export class WorldScene extends WarpableScene {
       //@ts-expect-error - Phaser types are wrong
       (this.arrows?.down.isDown || this.wasd?.down?.isDown) ?? false;
 
+    const isDiagonal = (isLeft || isRight) && (isUp || isDown);
+    const speedCardinal = isDiagonal ? speedAbsolute * 0.8 : speedAbsolute;
+
     const playerSprite = this.player.getAt(0) as Phaser.GameObjects.Sprite;
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
     if (isLeft) {
-      playerBody.setVelocityX(-speed);
+      playerBody.setVelocityX(-speedCardinal);
     } else if (isRight) {
-      playerBody.setVelocityX(speed);
+      playerBody.setVelocityX(speedCardinal);
     } else {
       playerBody.setVelocityX(0);
     }
 
     if (isUp) {
-      playerBody.setVelocityY(-speed);
+      playerBody.setVelocityY(-speedCardinal);
     } else if (isDown) {
-      playerBody.setVelocityY(speed);
+      playerBody.setVelocityY(speedCardinal);
     } else {
       playerBody.setVelocityY(0);
     }
 
     const direction = `${isUp ? "up" : isDown ? "down" : ""
-      }${(isLeft || isRight) && (isUp || isDown) ? "_" : ""}${isLeft ? "left" : isRight ? "right" : ""}`;
+      }${isDiagonal ? "_" : ""}${isLeft ? "left" : isRight ? "right" : ""}`;
     const isMoving = isLeft || isRight || isUp || isDown;
 
     const changeAni =
-      isMoving !== this.lastTickMoving || direction !== this.lastTickDirection;
+      isMoving !== this.lastTickMoving ||
+      direction !== this.lastTickDirection ||
+      isRunning !== this.lastTickRunning;
     if (changeAni) {
       const aniDirection = direction || this.lastTickDirection;
       if (isMoving) {
         this.playAni(
           playerSprite,
           this.playerSpriteKeyBase,
-          `walk${aniDirection ? `_${aniDirection}` : ""}`,
+          `${isRunning ? "run" : "walk"}${aniDirection ? `_${aniDirection}` : ""}`,
         );
       } else {
         this.playAni(
@@ -1033,20 +1054,20 @@ export class WorldScene extends WarpableScene {
       );
       if (isOverlappingWithWarp) {
         console.debug("Player is overlapping with warp, cancelling update");
-        return;
+      } else {
+        emitSceneEvent({
+          type: "Update Position",
+          position: [
+            this.player.x / this.tileSizeScaled[0],
+            this.player.y / this.tileSizeScaled[1],
+          ],
+        });
       }
-
-      emitSceneEvent({
-        type: "Update Position",
-        position: [
-          this.player.x / this.tileSizeScaled[0],
-          this.player.y / this.tileSizeScaled[1],
-        ],
-      });
     }
 
     this.lastTickMoving = isMoving;
     this.lastTickDirection = direction;
+    this.lastTickRunning = isRunning;
 
     if (this.tutorial) {
       const tl = this.topLeftDynamic();
@@ -1087,7 +1108,7 @@ export class WorldScene extends WarpableScene {
     ReactDOM.createRoot(memElement).render(
       <TutorialOverlay
         close={() => {
-          localStorage.setItem("tutorialDone", "true");
+          localStorage.setItem("tutorialDone_2", "true");
           this.tutorial?.destroy();
         }}
       />,
