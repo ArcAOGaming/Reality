@@ -92,11 +92,11 @@ export type RealityClientForProcess = (processId: string) => RealityClient;
 
 export const createRealityClientForProcess =
   (wallet: AoWallet): RealityClientForProcess =>
-  (processId: string) => {
-    const aoContractClient = createAoContractClient(
-      processId,
-      connect(),
-      wallet,
-    );
-    return createRealityClient(aoContractClient);
-  };
+    (processId: string) => {
+      const aoContractClient = createAoContractClient(
+        processId,
+        connect(),
+        wallet,
+      );
+      return createRealityClient(aoContractClient);
+    };

@@ -473,6 +473,8 @@ export const renderMachine = setup({
             ? {
               Metadata: {
                 ProfileId: input.profileInfo.ProfileId,
+                // SpriteTxId: "JeXVH150o7QkfOPPg2dc8OMS6_h00zUfiHYCz-XNQqc",
+                // SpriteAtlasTxId: "h6cTVvR0HBd7q1jd7cyyXHMNWwRFBIGiMf1ksni6vNE"
               },
             }
             : {}),
