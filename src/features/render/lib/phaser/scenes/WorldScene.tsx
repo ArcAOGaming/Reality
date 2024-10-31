@@ -752,10 +752,19 @@ export class WorldScene extends WarpableScene {
     spriteKeyBase: string,
   ) {
     const isBouncer = bouncerEntityIds.includes(entityId);
+
+    // List of animations to choose from
+    const animations = ['sludge'];//['emote', 'punch_up', 'punch_down', 'punch', 'sludge'];
+
     sprite.on(
       "pointerdown",
       () => {
-        this.playAni(sprite, spriteKeyBase, `emote`);
+        // Pick a random animation from the list
+        const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+
+        // Play the randomly selected animation
+        this.playAni(sprite, spriteKeyBase, randomAnimation);
+
         if (entity.Metadata?.Interaction?.Type === "Default") {
           this.aoContractClientForProcess(entityId).message({
             tags: [
@@ -766,8 +775,11 @@ export class WorldScene extends WarpableScene {
             ],
           });
         }
+
         setTimeout(() => {
+          // Revert to the idle animation after 1 second
           this.playAni(sprite, spriteKeyBase, `idle`);
+
           if (isBouncer) {
             this.showEntityChatMessages([
               {
@@ -785,6 +797,7 @@ export class WorldScene extends WarpableScene {
       this,
     );
   }
+
 
   createAvatarEntityContainer(
     entityId: string,
@@ -840,8 +853,8 @@ export class WorldScene extends WarpableScene {
 
     const resolvedProfile =
       (isPlayer ? this.playerProfileInfo : undefined) ?? profile;
-    const displayText = ""
-    entity.Metadata?.DisplayName ??
+    const displayText =
+      entity.Metadata?.DisplayName ??
       resolvedProfile?.DisplayName ??
       resolvedProfile?.Username ??
       truncateAddress(entityId, 4, 3, "…");
