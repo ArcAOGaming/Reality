@@ -8,6 +8,7 @@
     "test": "vitest",
     "build": "vite build --base ./",
     "build-safe": "tsc && vite build --base ./",
+    "deploy": "DEPLOY_KEY=$(base64 -i ./.secret/deploy_frontend.json) npx permaweb-deploy --ant-process hCGTGU3tOfjup3TQxhz8BsNK8NXXx0-n-MZyOc0yWHM",
     "format": "prettier --write .",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -16,8 +17,10 @@
     "aos-s1": "func() { aos ${1} --wallet ./.secret/deploy_sqlite_jwk.json --module=\"GYrbbe0VbHim_7Hi6zrOpHQXrSQz07XNtwCnfbFo2I0\" ; }; func",
     "aos-s2": "func() { aos ${1} --wallet ./.secret/deploy_sqlite_jwk.json --module=\"aGVVWHldKA7GBlI_w7Qp_agO6aKjCoOTPA1G2OlluXE\" ; }; func",
     "aos-l1": "func() { aos ${1} --wallet ./.secret/deploy_llama_jwk.json --module=\"BlucTh6AJQvcbhNPa1t1UpNgHTM7UEmR0czYdAdCxXg\" ; }; func",
+    "aos-l1.1": "func() { aos ${1} --wallet ./.secret/deploy_llama_jwk.json --module=\"yyghqOorzZZxuEaILaBVVt2BHkZoujCTxKj-_atX0SE\" ; }; func",
     "aos-l2": "func() { aos ${1} --wallet ./.secret/deploy_llama_jwk.json --module=\"-jmMbTRSNk_q7yV-Heu2qbCH410RKy0qI_2UEQLG6UE\" ; }; func",
-    "aos-l3": "func() { aos ${1} --wallet ./.secret/deploy_llama_jwk.json --module=\"XcWULRSWWv_bmaEyx4PEOFf4vgRSVCP9vM5AucRvI40\" ; }; func"
+    "aos-l3": "func() { aos ${1} --wallet ./.secret/deploy_llama_jwk.json --module=\"XcWULRSWWv_bmaEyx4PEOFf4vgRSVCP9vM5AucRvI40\" ; }; func",
+    "aos-le1": "func() { aos ${1} --wallet ./.secret/deploy_llama_jwk.json --module=\"d5i1D7MmP23Lmj0OdEAo329skLsbxXSWaNFh0R8xCbE\" ; }; func"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.4.2",
@@ -87,6 +90,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "eslint-plugin-storybook": "^0.8.0",
+    "permaweb-deploy": "^1.1.8",
     "postcss": "^8.4.38",
     "prettier": "3.3.2",
     "storybook": "^8.1.3",
