@@ -7,30 +7,30 @@ Initialized = Initialized or nil
 
 TARGET_WORLD_PID = "lA4WPP5v9iUowzLJtCjZsSH_m6WV2FUbGlPSlG7KbnM"
 BaseSprite = '2wRFNJg9XlCcG6jKNpDAMxX1vnHZoub998KkR0qfDjE'
-BaseSpriteAtlas = 'bffb80a0-448d-4523-b9c9-c01f1e6a3533'
+BaseSpriteAtlas = 'sVIX0l_PFC6M7lYpuEOGJ_f5ESOkMxd5f5xCQSUH_2g'
 
 -- Available tokens for purchase
 PurchaseTokens = {
   {
     token = 'wOrb8b_V8QixWyXZub48Ki5B6OIDyf_p1ngoonsaRpQ',  -- TRUNK token
-    amount = "1984",
+    amount = "1948",
     name = "TRUNK",
-    icon="hqg-Em9DdYHYmMysyVi8LuTGF8IF_F7ZacgjYiSpj0k",
-    denomination = 3  
-},
+    icon = "hqg-Em9DdYHYmMysyVi8LuTGF8IF_F7ZacgjYiSpj0k",
+    denomination = 3
+  },
   {
     token = 'xU9zFkq3X2ZQ6olwNVvr1vUWIjc3kXTWr7xKQD6dh10',
     amount = "198400000000",
     name = "wAR",
-    icon="L99jaxRKQKJt9CqoJtPaieGPEhJD3wNhR4iGqc8amXs",
-    denomination = 12 
+    icon = "L99jaxRKQKJt9CqoJtPaieGPEhJD3wNhR4iGqc8amXs",
+    denomination = 12
   },
   {
     token = 'OsK9Vgjxo0ypX_HLz2iJJuh4hp3I80yA9KArsJjIloU',
     amount = "1000000000",
-    name = "NAB" ,
-    icon="LQ4crOHN9qO6JsLNs253AaTch6MgAMbM8PKqBxs4hgI",
-    denomination = 8 
+    name = "NAB",
+    icon = "LQ4crOHN9qO6JsLNs253AaTch6MgAMbM8PKqBxs4hgI",
+    denomination = 8
   }
 }
 
@@ -235,20 +235,20 @@ Handlers.add(
       ao.send({
         Target = msg.From,
         Data = json.encode({
-          type = "error",
-          error = "Unauthorized access"
+          status = "error",
+          message = "Unauthorized access"
         })
       })
       return
     end
 
     local data = json.decode(msg.Data)
-    if not data or not data.addresses or type(data.addresses) ~= "table" then
+    if not data or not data.function or data.function ~= "add_addresses" or not data.addresses or type(data.addresses) ~= "table" then
       ao.send({
         Target = msg.From,
         Data = json.encode({
-          type = "error",
-          error = "Invalid input format"
+          status = "error",
+          message = "Invalid input format"
         })
       })
       return
@@ -274,11 +274,11 @@ Handlers.add(
     ao.send({
       Target = msg.From,
       Data = json.encode({
-        type = "ok",
-        data = json.encode({
+        status = "success",
+        result = {
           successful = successful,
           failed = failed
-        })
+        }
       })
     })
   end

@@ -495,7 +495,7 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className={`min-h-screen h-screen bg-gradient-to-br ${currentTheme.bg} p-2 sm:p-4 overflow-y-auto lg:overflow-hidden`}>
+    <div className={`min-h-screen h-screen bg-gradient-to-br ${currentTheme.bg} p-2 sm:p-4 overflow-y-auto lg:overflow-hidden relative`}>
       {showCelebration && (
         <div className="fixed inset-0 z-50 pointer-events-none">
           <Confetti
@@ -506,16 +506,10 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
             gravity={0.3}
             colors={['#F4860A', '#814E33', '#FCF5D8', '#FFD700', '#FFA500']}
           />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-                        text-4xl font-bold text-center text-[#F4860A] animate-bounce">
-            🎉 Congratulations! 🎉
-            <div className="text-xl mt-2 text-[#FCF5D8]">
-              Skin Customization Unlocked!
-            </div>
-          </div>
         </div>
       )}
-      <div className={`h-full w-full max-w-7xl mx-auto backdrop-blur-xl ${currentTheme.container} ${currentTheme.text} rounded-2xl shadow-2xl p-2 sm:p-4 border ${currentTheme.border} flex flex-col`}>
+
+      <div className={`h-[calc(100%-3rem)] w-full max-w-7xl mx-auto backdrop-blur-xl ${currentTheme.container} ${currentTheme.text} rounded-2xl shadow-2xl p-2 sm:p-4 border ${currentTheme.border} flex flex-col relative mb-12`}>
         {/* Header */}
         <div className="flex justify-between items-center mb-2 flex-shrink-0">
           <button
@@ -635,6 +629,29 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
           </div> */}
 
         {/* Status Messages */}
+      </div>
+
+      {/* Footer with powered by logos */}
+      <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center gap-4 py-2 px-3 bg-black/30 backdrop-blur-sm rounded-b-2xl">
+        <div className="flex items-center gap-3">
+          <span className="text-base text-white/70">Powered by</span>
+          <a 
+            href="https://ar.io" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="transition-transform hover:scale-105"
+          >
+            <img src={new URL('./assets/ARIO.png', import.meta.url).href} alt="ARIO.pn" className="h-12" />
+          </a>
+          <a 
+            href="https://game.ar.io" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="transition-transform hover:scale-105"
+          >
+            <img src={new URL('./assets/arcao.ico', import.meta.url).href} alt="arcao" className="h-12" />
+          </a>
+        </div>
       </div>
 
       <PurchaseModal
