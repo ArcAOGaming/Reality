@@ -41,6 +41,7 @@
     "@xstate/react": "^4.1.1",
     "@yornaath/batshit": "^0.10.1",
     "arweave": "^1.15.1",
+    "@ardrive/turbo-sdk": "^1.21.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "fontfaceobserver": "^2.3.0",
@@ -59,6 +60,7 @@
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "vite-plugin-node-polyfills": "^0.22.0",
     "warp-arbundles": "^1.0.4",
     "xstate": "^5.13.0",
     "zod": "^3.23.8"

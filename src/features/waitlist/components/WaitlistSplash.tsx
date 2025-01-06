@@ -55,11 +55,11 @@ export function WaitlistSplash({
             </Button>
           </div>
           <div className="z-20 h-[380px] flex flex-col items-center justify-start gap-1">
-            <img
-              src="assets/branding/SPLogo.png"
+            {/* <img
+              src="assets/branding/SPLog0.png"
               height={120}
               width={120}
-            ></img>
+            ></img> */}
             <img src="assets/branding/RuneRealm_Logo.png" width={325}></img>
           </div>
           <LoginMenu
