@@ -8,7 +8,7 @@
     "test": "vitest",
     "build": "vite build --base ./",
     "build-safe": "tsc && vite build --base ./",
-    "deploy": "npm run build && permaweb-deploy --deploy-folder ./build --ant-process $DEPLOY_ANT_PROCESS --undername=runerealm",
+    "deploy": "npm run build && permaweb-deploy --deploy-folder ./dist --ant-process $DEPLOY_ANT_PROCESS --undername=runerealm",
     "format": "prettier --write .",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
