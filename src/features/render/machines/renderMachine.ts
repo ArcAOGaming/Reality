@@ -473,8 +473,9 @@ export const renderMachine = setup({
             ? {
               Metadata: {
                 ProfileId: input.profileInfo.ProfileId,
-                // SpriteTxId: "JeXVH150o7QkfOPPg2dc8OMS6_h00zUfiHYCz-XNQqc",
-                // SpriteAtlasTxId: "h6cTVvR0HBd7q1jd7cyyXHMNWwRFBIGiMf1ksni6vNE"
+                // TODO make this dynamic
+                // SpriteTxId: "HGYt1ky8SQim6LQtlUt0mcx9ccIzEVHr6kU9kiVHd4g",
+                // SpriteAtlasTxId: "gh4HIutsKPqe1mokmYtPiYEPqtRaF3GP_DhcGI_S5CE"
               },
             }
             : {}),

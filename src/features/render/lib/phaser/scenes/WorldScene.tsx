@@ -203,9 +203,33 @@ export class WorldScene extends WarpableScene {
     };
   }
 
-  preload() { }
+  preload() {
+    const spriteTxId =
+      this._2dTileParams?.PlayerSpriteTxId ??
+      this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteTxId;
+  
+    const spriteAtlasTxId =
+      this._2dTileParams?.PlayerSpriteAtlasTxId ??
+      this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteAtlasTxId;
+  
+    if (!spriteTxId) {
+      console.error("[Preload] Missing PlayerSpriteTxId, cannot load sprite!");
+      return;
+    }
+  
+    const spriteKey = `sprite_${spriteTxId}_${spriteAtlasTxId ?? "default"}`;
+  
+    console.log(`[Preload] Loading atlas: ${spriteKey}`);
+  
+    this.load.atlas(
+      spriteKey,
+      `assets/${spriteTxId}.png`,
+      `assets/${spriteTxId}.json`
+    );
+  }
 
   create() {
+    
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor(0x111111);
 
@@ -398,26 +422,29 @@ export class WorldScene extends WarpableScene {
 
   public spriteKeyBase(entityId: string, entity: RealityEntity) {
     const isPlayer = entityId === this.playerAddress;
-    const spriteData =
-      entity.Metadata?.SpriteTxId !== undefined
-        ? {
-          sprite: entity.Metadata?.SpriteTxId,
-          atlas: entity.Metadata?.SpriteAtlasTxId,
-        }
-        : isPlayer &&
-          this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteTxId !==
-          undefined
-          ? {
-            sprite: this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteTxId,
-            atlas:
-              this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteAtlasTxId,
-          }
-          : undefined;
-
-    return spriteData !== undefined
-      ? `sprite_${spriteData.sprite}_${spriteData.atlas ?? "default"}`
+  
+    // Retrieve sprite and atlas IDs safely
+    const spriteTxId =
+      entity.Metadata?.SpriteTxId ??
+      this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteTxId;
+    const spriteAtlasTxId =
+      entity.Metadata?.SpriteAtlasTxId ??
+      this.worldState.parameters["2D-Tile-0"]?.PlayerSpriteAtlasTxId;
+  
+    if (!spriteTxId) {
+      console.error(`[spriteKeyBase] Missing SpriteTxId for entity: ${entityId}`);
+    }
+  
+    console.log(
+      `[spriteKeyBase] entityId: ${entityId}, spriteTxId: ${spriteTxId}, spriteAtlasTxId: ${spriteAtlasTxId}`
+    );
+  
+    // Return a valid key or fallback
+    return spriteTxId
+      ? `sprite_${spriteTxId}_${spriteAtlasTxId ?? "default"}`
       : `llama_${entity.Metadata?.SkinNumber ?? (isPlayer ? 0 : 4)}`;
   }
+  
 
   getDirectionFromPositions(
     oldPosition: Point2D,
@@ -429,17 +456,13 @@ export class WorldScene extends WarpableScene {
     return getDirectionFromDelta(dx, dy);
   }
 
-  playAni(
-    entity: Phaser.GameObjects.Sprite,
-    animBase: string,
-    animEnd: string,
-  ) {
+  playAni(entity: Phaser.GameObjects.Sprite, animBase: string, animEnd: string) {
     const resolvedAnimEnd = resolveSystemAniToExistingAni(animEnd, (testEnd) =>
       entity.anims.animationManager.exists(`${animBase}_${testEnd}`),
     );
-    // console.log({ animBase, animEnd, resolvedAnimEnd });
-
+  
     const resolvedAnim = `${animBase}_${resolvedAnimEnd}`;
+    console.log(`[playAni] AnimBase: ${animBase}, AnimEnd: ${animEnd}, ResolvedAnim: ${resolvedAnim}`);
     entity.play(resolvedAnim, true);
     entity.flipX =
       animEnd.endsWith("_left") && !resolvedAnimEnd.endsWith("_left");
