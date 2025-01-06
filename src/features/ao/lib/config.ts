@@ -3,7 +3,7 @@ import { PermissionType } from "./aoWallet";
 export const permissionsRequired: Array<PermissionType> = [
   "ACCESS_ADDRESS",
   "SIGN_TRANSACTION",
-  // "ACCESS_PUBLIC_KEY",
+  "ACCESS_PUBLIC_KEY",
   // "ENCRYPT",
   // "DECRYPT",
   "SIGNATURE",
