@@ -318,16 +318,15 @@ const ExportAndUploadButton: React.FC<ExportAndUploadButtonProps> = ({
 
   const buttonText = useMemo(() => {
     if (uploading) return 'Uploading...';
-    if (signer) return 'Upload Sprite';
-    return 'Connect Wallet';
-  }, [uploading, signer]);
+    if (!signer) return 'Connect Wallet';
+    if (!isUnlocked) return 'Unlock Access';
+    return 'Upload Sprite';
+  }, [uploading, signer, isUnlocked]);
 
   const getButtonTitle = () => {
-    if (mode === 'arweave') {
-      if (!isConnected || !signer) return 'Click to connect your wallet';
-      if (!isUnlocked) return 'Click to unlock sprite customization';
-    }
-    return '';
+    if (!signer) return 'Click to connect your wallet';
+    if (!isUnlocked) return 'Click to unlock sprite customization';
+    return 'Click to upload your sprite';
   };
 
   return (

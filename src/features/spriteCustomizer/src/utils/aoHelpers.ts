@@ -70,8 +70,11 @@ export const checkWalletStatus = async (walletInfo?: { address: string }): Promi
         const response = JSON.parse(result.Messages[0].Data);
         console.log("Parsed unlock status:", response);
 
-        // Check if response.result is exactly true (not just truthy)
-        const isUnlocked = response.result === true;
+        // Handle both old and new response formats
+        const isUnlocked = response.type === "ok" ? 
+            JSON.parse(response.data).result : 
+            response.result === true;
+            
         console.log("Final unlock status:", isUnlocked);
 
         return {
