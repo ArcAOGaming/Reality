@@ -8,6 +8,7 @@ export const permissionsRequired: Array<PermissionType> = [
   // "DECRYPT",
   "SIGNATURE",
   "ACCESS_ARWEAVE_CONFIG",
+  "DISPATCH"
 ];
 
 export const permissionsRequested = [
