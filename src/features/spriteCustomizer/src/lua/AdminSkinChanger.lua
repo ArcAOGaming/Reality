@@ -27,7 +27,7 @@ PurchaseTokens = {
   },
   {
     token = 'OsK9Vgjxo0ypX_HLz2iJJuh4hp3I80yA9KArsJjIloU',
-    amount = "1000000000",
+    amount = "5000000000",
     name = "NAB" ,
     icon="LQ4crOHN9qO6JsLNs253AaTch6MgAMbM8PKqBxs4hgI",
     denomination = 8 

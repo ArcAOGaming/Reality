@@ -137,8 +137,7 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
       if (wallet && window.arweaveWallet) {
         console.log('Initializing with provided wallet:', wallet);
         try {
-          // Create ArConnect signer instance
-          await window.arweaveWallet.connect(REQUIRED_PERMISSIONS);
+          // Create ArConnect signer instance without requesting connection
           const browserSigner = new ArconnectSigner(window.arweaveWallet);
           console.log('Created browser signer for wallet');
           
@@ -281,24 +280,7 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
   };
 
   const handleUpload = async () => {
-    console.log('SpriteCustomizer: Upload button clicked');
-    console.log('Current state:', { signer, isUnlocked });
-
-    if (!signer) {
-      setUploadStatus('Please connect your wallet first');
-      return;
-    }
-
-    if (!isUnlocked) {
-      setIsPurchaseModalOpen(true);
-      return;
-    }
-
-    console.log('SpriteCustomizer: Ready to upload');
     try {
-      setUploadStatus('Creating sprite...');
-      
-      // Create a canvas and draw the sprite
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d')!;
       canvas.width = 576; // 12 frames * 48 pixels
@@ -307,58 +289,81 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
       // Draw base image
       console.log('Drawing base image...');
       const baseImg = new Image();
-      baseImg.src = '/assets/BASE.png';
+      baseImg.crossOrigin = "anonymous";  
+      const basePath = new URL('./assets/BASE.png', import.meta.url).href;
+      console.log('Loading base image from:', basePath);
+      baseImg.src = basePath;
+      
       await new Promise((resolve, reject) => {
         baseImg.onload = resolve;
-        baseImg.onerror = reject;
+        baseImg.onerror = (e) => {
+          console.error('Error loading base image:', e);
+          reject(new Error('Failed to load base image'));
+        };
       });
+      
       ctx.drawImage(baseImg, 0, 0, baseImg.width, 60, 0, 0, 576, 60);
 
       // Process each layer
       for (const [layerName, layerData] of Object.entries(layers)) {
+        if (layerData.style === 'None') continue;  
+        
         console.log(`Processing layer ${layerName}...`);
         const img = new Image();
-        img.src = `/assets/${layerName}/${layerData.style}.png`;
+        img.crossOrigin = "anonymous";  
+        const layerPath = new URL(`./assets/${layerName}/${layerData.style}.png`, import.meta.url).href;
+        console.log('Loading layer image from:', layerPath);
+        img.src = layerPath;
+        
         await new Promise((resolve, reject) => {
           img.onload = resolve;
-          img.onerror = reject;
+          img.onerror = (e) => {
+            console.error(`Error loading ${layerName} image:`, e);
+            reject(new Error(`Failed to load ${layerName} image`));
+          };
         });
 
         const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = 576;  // Fixed width
-        tempCanvas.height = 60;  // Fixed height
+        tempCanvas.width = 576;  
+        tempCanvas.height = 60;  
         const tempCtx = tempCanvas.getContext('2d')!;
 
-        // Draw only the first row, scaling to target size
-        tempCtx.drawImage(img, 
-          0, 0,           // Source x, y
-          img.width, 60,  // Source width, height (only first row)
-          0, 0,           // Destination x, y
-          576, 60         // Destination width, height (fixed size)
-        );
-        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-        
-        // Colorize the layer
-        const r = parseInt(layerData.color.slice(1, 3), 16);
-        const g = parseInt(layerData.color.slice(3, 5), 16);
-        const b = parseInt(layerData.color.slice(5, 7), 16);
+        try {
+          // Draw only the first row, scaling to target size
+          tempCtx.drawImage(img, 
+            0, 0,           // Source x, y
+            img.width, 60,  // Source width, height (only first row)
+            0, 0,           // Destination x, y
+            576, 60         // Destination width, height (fixed size)
+          );
+          
+          const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+          
+          // Colorize the layer
+          const r = parseInt(layerData.color.slice(1, 3), 16);
+          const g = parseInt(layerData.color.slice(3, 5), 16);
+          const b = parseInt(layerData.color.slice(5, 7), 16);
 
-        for (let i = 0; i < imageData.data.length; i += 4) {
-          if (imageData.data[i + 3] > 0) {
-            const luminance = (imageData.data[i] * 0.299 +
-              imageData.data[i + 1] * 0.587 +
-              imageData.data[i + 2] * 0.114) / 255;
+          for (let i = 0; i < imageData.data.length; i += 4) {
+            if (imageData.data[i + 3] > 0) {
+              const luminance = (imageData.data[i] * 0.299 +
+                imageData.data[i + 1] * 0.587 +
+                imageData.data[i + 2] * 0.114) / 255;
 
-            imageData.data[i] = r * luminance;
-            imageData.data[i + 1] = g * luminance;
-            imageData.data[i + 2] = b * luminance;
+              imageData.data[i] = r * luminance;
+              imageData.data[i + 1] = g * luminance;
+              imageData.data[i + 2] = b * luminance;
+            }
           }
+
+          tempCtx.putImageData(imageData, 0, 0);
+          ctx.drawImage(tempCanvas, 0, 0);
+        } catch (e) {
+          console.error(`Error processing ${layerName}:`, e);
+          throw new Error(`Failed to process ${layerName} layer`);
         }
-
-        tempCtx.putImageData(imageData, 0, 0);
-        ctx.drawImage(tempCanvas, 0, 0);
       }
-
+      
       // Convert to blob
       const blob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob((blob) => {
@@ -509,17 +514,26 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
         </div>
       )}
 
-      <div className={`h-[calc(100%-3rem)] w-full max-w-7xl mx-auto backdrop-blur-xl ${currentTheme.container} ${currentTheme.text} rounded-2xl shadow-2xl p-2 sm:p-4 border ${currentTheme.border} flex flex-col relative mb-12`}>
+      <div className={`h-[calc(100%-3rem)] w-full max-w-7xl mx-auto backdrop-blur-xl ${currentTheme.container} ${currentTheme.text} rounded-2xl shadow-2xl border ${currentTheme.border} flex flex-col relative mb-12`}>
         {/* Header */}
-        <div className="flex justify-between items-center mb-2 flex-shrink-0">
+        <div className="relative h-48">
+          {/* Theme toggle button - positioned absolute in top left */}
           <button
-            onClick={handleDarkModeToggle}
-            className={`px-3 py-1 sm:px-4 sm:py-2 rounded-lg ${currentTheme.buttonBg} ${currentTheme.text} border ${currentTheme.border} transition-colors duration-200`}
+            onClick={() => setDarkMode(!darkMode)}
+            className={`absolute top-4 left-4 p-3 text-2xl rounded-lg transition-colors ${currentTheme.buttonBg} ${currentTheme.buttonHover}`}
           >
-            {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+            {darkMode ? '🌞' : '🌙'}
           </button>
-          <img src={logoPath} alt="Rune Realm Logo" className="h-16 sm:h-28 w-auto mx-4" />
-          <div className="w-[100px]" /> {/* Spacer to maintain header layout */}
+          
+          {/* Centered logo */}
+          <div className="w-full h-full flex justify-center items-center">
+            <img
+              src={logoPath}
+              alt="Rune Realm"
+              style={{ height: '200px', maxWidth: 'none' }}
+              className="w-auto object-contain"
+            />
+          </div>
         </div>
 
         {/* Main Content */}
@@ -606,20 +620,20 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
             Random Layers
           </button>
           <ExportAndUploadButton
-            id="export-upload-button"
-            layers={layers} 
-            darkMode={darkMode} 
-            mode="arweave"
+            layers={layers}
+            darkMode={darkMode}
             signer={signer}
+            wallet={wallet}
             isUnlocked={isUnlocked}
+            onUploadClick={handleUpload}
+            onNeedUnlock={() => setIsPurchaseModalOpen(true)}
+            onConnect={connectWallet}
+            onUploadComplete={() => {
+              setUploadStatus('Upload complete!');
+              if (onEnter) onEnter();
+            }}
             onUploadStatusChange={setUploadStatus}
             onError={setError}
-            onConnect={connectWallet}
-            onNeedUnlock={() => setIsPurchaseModalOpen(true)}
-            onUploadComplete={handleExportComplete}
-            className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 
-              ${currentTheme.buttonBg} ${currentTheme.buttonHover} ${currentTheme.text} 
-              backdrop-blur-md shadow-lg hover:shadow-xl border ${currentTheme.border}`}
           />
         </div>
 
@@ -643,13 +657,16 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
           >
             <img src={new URL('./assets/ARIO.png', import.meta.url).href} alt="ARIO.pn" className="h-12" />
           </a>
+          <span className="text-base text-white/70 font-semibold">ON</span>
           <a 
             href="https://game.ar.io" 
             target="_blank" 
             rel="noopener noreferrer"
             className="transition-transform hover:scale-105"
           >
-            <img src={new URL('./assets/arcao.ico', import.meta.url).href} alt="arcao" className="h-12" />
+            <div className="bg-white rounded-full p-1 flex items-center justify-center w-[44px] h-[44px]">
+              <img src={new URL('./assets/arcao.ico', import.meta.url).href} alt="arcao" className="h-11 w-11" />
+            </div>
           </a>
         </div>
       </div>
