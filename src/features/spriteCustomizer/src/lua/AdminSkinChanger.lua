@@ -225,6 +225,25 @@ Handlers.add(
   end
 )
 
+-- Handle CheckUnlocked action
+Handlers.add(
+  "CheckSkin",
+  Handlers.utils.hasMatchingTag("Action", "CheckSkin"),
+  function(msg)
+    local address = ao.id
+    if msg.Tags.Address then
+      address = msg.Tags.Address
+    end
+    
+    local result = UserSkins[address].txId or "None"
+    
+    ao.send({
+      Target = msg.From,
+      Data = result
+    })
+  end
+)
+
 -- Handler for bulk address import
 Handlers.add(
   'BulkImportAddresses',
