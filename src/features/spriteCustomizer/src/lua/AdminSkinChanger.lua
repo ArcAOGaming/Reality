@@ -13,7 +13,7 @@ BaseSpriteAtlas = 'bffb80a0-448d-4523-b9c9-c01f1e6a3533'
 PurchaseTokens = {
   {
     token = 'wOrb8b_V8QixWyXZub48Ki5B6OIDyf_p1ngoonsaRpQ',  -- TRUNK token
-    amount = "1984",
+    amount = "1",
     name = "TRUNK",
     icon="hqg-Em9DdYHYmMysyVi8LuTGF8IF_F7ZacgjYiSpj0k",
     denomination = 3  

@@ -473,6 +473,9 @@ export const renderMachine = setup({
             ? {
               Metadata: {
                 ProfileId: input.profileInfo.ProfileId,
+                Scale: 1.5,
+                Hitbox: {width:38,height:48,offsetX:1,offsetY:20},
+                Collides: true
                 // TODO make this dynamic
                 // SpriteTxId: "HGYt1ky8SQim6LQtlUt0mcx9ccIzEVHr6kU9kiVHd4g",
                 // SpriteAtlasTxId: "gh4HIutsKPqe1mokmYtPiYEPqtRaF3GP_DhcGI_S5CE"
