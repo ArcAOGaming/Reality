@@ -827,6 +827,7 @@ export class WorldScene extends WarpableScene {
     entity: RealityEntity,
     profile?: ProfileInfo,
   ) {
+    
     const isPlayer = entityId === this.playerAddress;
 
     const container = this.add
@@ -835,12 +836,12 @@ export class WorldScene extends WarpableScene {
         entity.Position[1] * this.tileSizeScaled[1],
       )
       .setDepth(isPlayer ? DEPTH_PLAYER_BASE + 1 : DEPTH_ENTITY_BASE + 1);
-
     const spriteKeyBase = this.spriteKeyBase(entityId, entity);
 
+    
     const sprite = this.add
       .sprite(0, 0, `${spriteKeyBase}_idle`)
-      .setScale(SCALE_ENTITIES)
+      .setScale(entity.Metadata?.Scale ? entity.Metadata.Scale : SCALE_ENTITIES)
       .setOrigin(0.5)
       .setInteractive();
 
@@ -906,15 +907,30 @@ export class WorldScene extends WarpableScene {
     container.add(nameText);
 
     if (isPlayer) {
-      container.setSize(20 * 2, 22 * 2);
-    } else {
+      if(entity.Metadata?.Hitbox) { //If overrides
+        container.setSize(entity.Metadata?.Hitbox.width, entity.Metadata?.Hitbox.height);
+        //container.setSize(38, 48);
+      }else{
+        container.setSize(20 * 2, 22 * 2);
+      }
+    } else {//TODO Ethan loook at this for needing the same override
       container.setSize(OBJECT_SIZE_ENTITY, OBJECT_SIZE_ENTITY);
+    }
+
+    if(entity.Metadata?.Hitbox) { //If overrides
+      container.setSize(entity.Metadata?.Hitbox.width, entity.Metadata?.Hitbox.height);
+      //container.setSize(38, 48);
     }
 
     this.physics.world.enable(container);
 
-    if (isPlayer) {
-      (container.body as Phaser.Physics.Arcade.Body).setOffset(1, 15);
+    if (isPlayer) { //TODO Ethan see if others can have hitboxes
+      if(entity.Metadata?.Hitbox){
+        //(container.body as Phaser.Physics.Arcade.Body).setOffset(1, 20);
+        (container.body as Phaser.Physics.Arcade.Body).setOffset(entity.Metadata?.Hitbox.offsetX, entity.Metadata?.Hitbox.offsetY);
+      }else{
+        (container.body as Phaser.Physics.Arcade.Body).setOffset(1, 15);
+      }
     }
 
     return container;
