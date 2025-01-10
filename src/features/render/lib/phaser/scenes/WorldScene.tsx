@@ -25,8 +25,8 @@ import { AudioParams } from "@/features/reality/contract/audio";
 
 import { gameStateStore } from "@/lib/gameStateStore";
 
-const SCALE_TILES = 3;
-const SCALE_ENTITIES = 2;
+const SCALE_TILES = 4;
+const SCALE_ENTITIES = 2+(2*(1/3));
 
 const DEFAULT_TILE_SIZE_ORIGINAL = 16;
 const DEFAULT_TILE_SIZE_SCALED = DEFAULT_TILE_SIZE_ORIGINAL * SCALE_TILES;

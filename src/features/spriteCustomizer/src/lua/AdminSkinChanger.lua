@@ -13,7 +13,7 @@ BaseSpriteAtlas = 'bffb80a0-448d-4523-b9c9-c01f1e6a3533'
 PurchaseTokens = {
   {
     token = 'wOrb8b_V8QixWyXZub48Ki5B6OIDyf_p1ngoonsaRpQ',  -- TRUNK token
-    amount = "1",
+    amount = "1984",
     name = "TRUNK",
     icon="hqg-Em9DdYHYmMysyVi8LuTGF8IF_F7ZacgjYiSpj0k",
     denomination = 3  
@@ -302,5 +302,77 @@ Handlers.add(
     })
   end
 )
+
+
+-- Function to remove a user from the unlocked list
+function RemoveUserFromUnlocked(userId)
+    for index, value in ipairs(Unlocked) do
+      if value == userId then
+        table.remove(Unlocked, index)
+        print("Removed user from Unlocked list: " .. userId)
+        return true
+      end
+    end
+    print("User not found in Unlocked list: " .. userId)
+    return false
+  end
+  
+  -- Function to remove a user from the UserSkins list
+  function RemoveUserSkin(userId)
+    if UserSkins[userId] then
+      UserSkins[userId] = nil
+      print("Removed user's skin: " .. userId)
+      return true
+    end
+    print("User skin not found: " .. userId)
+    return false
+  end
+  
+  -- Handler for removing a user
+  Handlers.add(
+    'RemoveUser',
+    Handlers.utils.hasMatchingTag('Action', 'RemoveUser'),
+    function(msg)
+      -- Check if sender is admin
+      if not IsAdmin(msg.From) then
+        ao.send({
+          Target = msg.From,
+          Data = json.encode({
+            type = "error",
+            error = "Unauthorized access"
+          })
+        })
+        return
+      end
+  
+      local userId = msg.Tags.UserId
+      if not userId then
+        ao.send({
+          Target = msg.From,
+          Data = json.encode({
+            type = "error",
+            error = "No user ID specified"
+          })
+        })
+        return
+      end
+  
+      local unlockedRemoved = RemoveUserFromUnlocked(userId)
+      local skinRemoved = RemoveUserSkin(userId)
+  
+      local result = {
+        type = "ok",
+        message = "User removal complete",
+        unlockedRemoved = unlockedRemoved,
+        skinRemoved = skinRemoved
+      }
+  
+      ao.send({
+        Target = msg.From,
+        Data = json.encode(result)
+      })
+    end
+  )
+  
 
 print("Loaded NEW AdminSkinChanger.lua")
