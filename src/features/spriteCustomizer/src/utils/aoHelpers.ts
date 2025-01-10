@@ -339,3 +339,26 @@ export const bulkImportAddresses = async (data: BulkImportRequest): Promise<Bulk
         throw error;
     }
 };
+
+// Remove user access
+export const removeUser = async (userId: string) => {
+    try {
+        const result = await message({
+            process: AdminSkinChanger,
+            tags: [
+                { name: "Action", value: "RemoveUser" },
+                { name: "UserId", value: userId }
+            ],
+            data: ""
+        });
+
+        if (!result.Messages || result.Messages.length === 0) {
+            throw new Error("No response from RemoveUser");
+        }
+
+        return JSON.parse(result.Messages[0].Data);
+    } catch (error) {
+        console.error("Error removing user:", error);
+        throw error;
+    }
+};
