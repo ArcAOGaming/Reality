@@ -4,6 +4,7 @@ import PreviewCanvas from './components/PreviewCanvas'
 import ExportButton from './components/ExportButton'
 import LayerSelector from './components/LayerSelector'
 import WalkingPreview from './components/WalkingPreview'
+import FourDirectionView from './components/FourDirectionView';
 import { SPRITE_CATEGORIES } from './constants/spriteAssets'
 import ExportAndUploadButton from './services/testupload'
 import { ArconnectSigner } from '@ardrive/turbo-sdk/web'
@@ -17,6 +18,8 @@ import { message, createDataItemSigner } from './config/aoConnection';
 import { AdminBulkUnlock } from './components/AdminBulkUnlock';
 import WarpTransition from './components/WarpTransition';
 import AdminRemoveUser from './components/AdminRemoveUser';
+import TestButton from './components/TestButton';
+import CacheDebugger from './components/CacheDebugger';
 
 interface LayerState {
   style: string;
@@ -456,6 +459,13 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
                     />
                   </div>
                 </div>
+                {/* <div className={`p-3 sm:p-4 rounded-xl ${currentTheme.container} border ${currentTheme.border}`}>
+                  <div className="flex justify-center">
+                    <FourDirectionView
+                      layers={layers}
+                    />
+                  </div>
+                </div> */}
                 <div className={`p-3 sm:p-4 rounded-xl ${currentTheme.container} border ${currentTheme.border}`}>
                   <div className="flex justify-center">
                     <WalkingPreview layers={layers} />
@@ -492,22 +502,29 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
           >
             Random Layers
           </button>
-          <ExportAndUploadButton
-            id="export-upload-button"
-            layers={layers} 
-            darkMode={darkMode} 
-            mode="arweave"
-            signer={signer}
-            isUnlocked={isUnlocked}
-            onUploadStatusChange={setUploadStatus}
-            onError={setError}
-            onConnect={connectWallet}
-            onNeedUnlock={() => setIsPurchaseModalOpen(true)}
-            onUploadComplete={handleExportComplete}
-            className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 
-              ${currentTheme.buttonBg} ${currentTheme.buttonHover} ${currentTheme.text} 
-              backdrop-blur-md shadow-lg hover:shadow-xl border ${currentTheme.border}`}
-          />
+          <div className="flex gap-4 justify-center mt-8">
+            {/* <ExportButton layers={layers} darkMode={darkMode} />
+            <TestButton layers={layers} darkMode={darkMode} /> */}
+            <ExportAndUploadButton
+              id="export-upload-button"
+              layers={layers} 
+              darkMode={darkMode} 
+              mode="arweave"
+              signer={signer}
+              isUnlocked={isUnlocked}
+              onUploadStatusChange={setUploadStatus}
+              onError={setError}
+              onConnect={connectWallet}
+              onNeedUnlock={() => setIsPurchaseModalOpen(true)}
+              onUploadComplete={handleExportComplete}
+              className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 
+                ${currentTheme.buttonBg} ${currentTheme.buttonHover} ${currentTheme.text} 
+                backdrop-blur-md shadow-lg hover:shadow-xl border ${currentTheme.border}`}
+            />
+          </div>
+          {/* <div className="mt-8">
+            <CacheDebugger />
+          </div> */}
         </div>
 
         {/* Admin Bulk Unlock Section - Commented out in production */}
