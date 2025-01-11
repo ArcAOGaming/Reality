@@ -372,14 +372,9 @@ const WalkingPreview: React.FC<WalkingPreviewProps> = ({ layers }) => {
         {/* Up button */}
         <div className="col-start-2">
           <button
-            onClick={() => handleTouchStart('up')}
             onMouseDown={() => handleTouchStart('up')}
             onMouseUp={() => handleTouchEnd('up')}
-            onMouseLeave={() => handleTouchEnd('up')}
-            onTouchStart={() => handleTouchStart('up')}
-            onTouchEnd={() => handleTouchEnd('up')}
-            className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-colors"
-          >
+            className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-colors">
             ▲
           </button>
         </div>
@@ -387,14 +382,9 @@ const WalkingPreview: React.FC<WalkingPreviewProps> = ({ layers }) => {
         {/* Left button */}
         <div className="col-start-1 row-start-2">
           <button
-            onClick={() => handleTouchStart('left')}
             onMouseDown={() => handleTouchStart('left')}
             onMouseUp={() => handleTouchEnd('left')}
-            onMouseLeave={() => handleTouchEnd('left')}
-            onTouchStart={() => handleTouchStart('left')}
-            onTouchEnd={() => handleTouchEnd('left')}
-            className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-colors"
-          >
+            className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-colors">
             ◄
           </button>
         </div>
@@ -402,14 +392,9 @@ const WalkingPreview: React.FC<WalkingPreviewProps> = ({ layers }) => {
         {/* Down button */}
         <div className="col-start-2 row-start-2">
           <button
-            onClick={() => handleTouchStart('down')}
             onMouseDown={() => handleTouchStart('down')}
             onMouseUp={() => handleTouchEnd('down')}
-            onMouseLeave={() => handleTouchEnd('down')}
-            onTouchStart={() => handleTouchStart('down')}
-            onTouchEnd={() => handleTouchEnd('down')}
-            className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-colors"
-          >
+            className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-colors">
             ▼
           </button>
         </div>
@@ -417,14 +402,9 @@ const WalkingPreview: React.FC<WalkingPreviewProps> = ({ layers }) => {
         {/* Right button */}
         <div className="col-start-3 row-start-2">
           <button
-            onClick={() => handleTouchStart('right')}
             onMouseDown={() => handleTouchStart('right')}
             onMouseUp={() => handleTouchEnd('right')}
-            onMouseLeave={() => handleTouchEnd('right')}
-            onTouchStart={() => handleTouchStart('right')}
-            onTouchEnd={() => handleTouchEnd('right')}
-            className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-colors"
-          >
+            className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-colors">
             ►
           </button>
         </div>
