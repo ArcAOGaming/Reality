@@ -3,7 +3,7 @@ name: Arweave Deploy
 on:
   push:
     branches:
-      - test
+      - main
 
 jobs:
   Arweave-build-and-deploy:

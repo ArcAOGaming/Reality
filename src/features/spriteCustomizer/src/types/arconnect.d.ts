@@ -10,11 +10,7 @@ interface Window {
         | "DECRYPT"
         | "SIGNATURE"
         | "ACCESS_ARWEAVE_CONFIG"
-<<<<<<< HEAD
         | 'DISPATCH'
-=======
-        | "DISPATCH"
->>>>>>> main
       >,
       appInfo?: {
         name?: string;
