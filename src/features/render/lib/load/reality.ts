@@ -149,6 +149,9 @@ export async function loadSpritePhaser(
   phaserLoader: Phaser.Loader.LoaderPlugin,
   sprite: { image: string; atlas?: string },
 ) {
+  console.log("Loading sprite", sprite);
+  console.log("Loading atlas", sprite.atlas);
+  console.log("Loading image", sprite.image);
   const atlas =
     sprite.atlas !== undefined
       ? await fetch(fetchUrl(sprite.atlas!)).then((res) => res.json() as object)
