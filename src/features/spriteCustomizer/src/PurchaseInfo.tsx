@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {  Link } from 'react-router-dom';
 import { checkWalletStatus } from './utils/aoHelpers';
 import { currentTheme } from './constants/theme';
 import PurchaseAccess from './components/PurchaseAccess';
@@ -11,6 +12,7 @@ interface PurchaseInfoProps {
 }
 
 const PurchaseInfo: React.FC<PurchaseInfoProps> = ({ darkMode = false, onThemeChange }) => {
+
   const [isConnected, setIsConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [isUnlocked, setIsUnlocked] = useState(false);
