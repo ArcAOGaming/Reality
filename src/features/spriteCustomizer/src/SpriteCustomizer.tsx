@@ -387,12 +387,12 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
       {/* Main container with gradient background */}
       <div className={`h-screen flex flex-col ${theme.bg}`}>
         {/* Navigation Bar */}
-        <Header
+        {/* <Header
           theme={theme}
           darkMode={darkMode}
           showBackButton={!onEnter}
           onDarkModeToggle={handleDarkModeToggle}
-        />
+        /> */}
         {/* Main content area */}
         <div className={`flex-1 w-full ${theme.container} ${theme.text} shadow-2xl ${theme.border} flex flex-col overflow-hidden`}>
           {/* Content area */}
