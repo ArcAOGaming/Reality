@@ -918,6 +918,8 @@ export class WorldScene extends WarpableScene {
     }
 
     if(entity.Metadata?.Hitbox) { //If overrides
+      console.log("Entity has a hitbox");
+      console.log(entity.Metadata?.Hitbox);
       container.setSize(entity.Metadata?.Hitbox.width, entity.Metadata?.Hitbox.height);
       //container.setSize(38, 48);
     }

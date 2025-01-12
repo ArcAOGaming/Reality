@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { checkWalletStatus } from './utils/aoHelpers';
 import { currentTheme } from './constants/theme';
 import PurchaseAccess from './components/PurchaseAccess';
@@ -118,15 +118,23 @@ const PurchaseInfo: React.FC<PurchaseInfoProps> = ({ darkMode = false, onThemeCh
                   isUnlocked={isUnlocked}
                 />
                 {isUnlocked && (
-                  <div className="mt-8 text-center">
-                    <button
-                      onClick={() => navigate('/customize')}
-                      className={`py-3 px-8 rounded-xl text-lg font-medium transition-all duration-300 transform hover:scale-105 
-                        bg-[#F4860A] hover:bg-[#F4860A]/90 ${theme.text} 
-                        backdrop-blur-md shadow-lg hover:shadow-xl`}
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                    <Link
+                      to="/customize"
+                      className={`px-6 py-3 rounded-xl text-lg font-medium transition-all duration-300 transform hover:scale-105
+                        ${theme.buttonBg} ${theme.buttonHover} ${theme.text} 
+                        backdrop-blur-md shadow-lg hover:shadow-xl border ${theme.border}`}
                     >
                       Set Up Your Sprite
-                    </button>
+                    </Link>
+                    <Link
+                      to="/factions"
+                      className={`px-6 py-3 rounded-xl text-lg font-medium transition-all duration-300 transform hover:scale-105
+                        ${theme.buttonBg} ${theme.buttonHover} ${theme.text} 
+                        backdrop-blur-md shadow-lg hover:shadow-xl border ${theme.border}`}
+                    >
+                      Choose Your Faction
+                    </Link>
                   </div>
                 )}
               </>

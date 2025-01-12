@@ -67,10 +67,10 @@ class FourDirectionScene extends Phaser.Scene {
     const directions: Direction[] = ['forward', 'left', 'right', 'back'];
     const frameRates = { forward: 8, left: 8, right: 8, back: 8 };
     const positions = {
-      forward: { x: 144, y: 340 },
-      left: { x: 144, y: 100 },
-      right: { x: 432, y: 100 },
-      back: { x: 432, y: 340 }
+      forward: { x: 160, y: 120 },
+      left: { x: 360, y: 120 },
+      right: { x: 560, y: 120 },
+      back: { x: 760, y: 120 }
     };
     
     // Define frame sequences for ping-pong style animation
@@ -83,7 +83,7 @@ class FourDirectionScene extends Phaser.Scene {
 
     // Add glassmorphism frames
     const frameStyle = {
-      width: 200,
+      width: 175,
       height: 200,
       fillStyle: 0x814E33,
       fillAlpha: 0.2,
@@ -137,10 +137,23 @@ class FourDirectionScene extends Phaser.Scene {
       fontFamily: 'Arial'
     };
 
-    this.add.text(144, positions.left.y - frameStyle.height/2 + 30, 'Left', labelStyle).setOrigin(0.5);
-    this.add.text(432, positions.left.y - frameStyle.height/2 + 30, 'Right', labelStyle).setOrigin(0.5);
-    this.add.text(144, positions.forward.y - frameStyle.height/2 + 30, 'Forward', labelStyle).setOrigin(0.5);
-    this.add.text(432, positions.forward.y - frameStyle.height/2 + 30, 'Back', labelStyle).setOrigin(0.5);
+    // Add direction descriptions
+    const descriptions = {
+      forward: 'Forward',
+      left: 'Left',
+      right: 'Right',
+      back: 'Back'
+    };
+
+    Object.entries(positions).forEach(([direction, pos]) => {
+      // Title
+      this.add.text(
+        pos.x,
+        pos.y - frameStyle.height/2 + 25,
+        descriptions[direction as Direction],
+        labelStyle
+      ).setOrigin(0.5);
+    });
 
     // Initialize sprite containers
     this.sprites['BASE'] = {};
@@ -295,8 +308,12 @@ const FourDirectionView: React.FC<FourDirectionViewProps> = ({ layers, darkMode 
     if (!gameRef.current) {
       const config: Phaser.Types.Core.GameConfig = {
         type: Phaser.AUTO,
-        width: 576,
-        height: 480,
+        scale: {
+          mode: Phaser.Scale.FIT,
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+          width: 960,
+          height: 280,  // Increased height to accommodate larger frames
+        },
         parent: 'four-direction-container',
         scene: class extends FourDirectionScene {
           constructor() {
@@ -306,10 +323,6 @@ const FourDirectionView: React.FC<FourDirectionViewProps> = ({ layers, darkMode 
         },
         transparent: true,
         pixelArt: true,
-        scale: {
-          mode: Phaser.Scale.FIT,
-          autoCenter: Phaser.Scale.CENTER_BOTH
-        },
         backgroundColor: 'rgba(0, 0, 0, 0)'
       };
 
@@ -328,8 +341,8 @@ const FourDirectionView: React.FC<FourDirectionViewProps> = ({ layers, darkMode 
   }, [layers, darkMode]);
 
   return (
-    <div className="relative w-full flex-1 min-h-[480px] flex items-center justify-center rounded-lg">
-      <div id="four-direction-container" className="w-[576px] h-[480px]" />
+    <div className="relative w-full h-full flex items-center justify-center rounded-lg overflow-hidden">
+      <div id="four-direction-container" className="w-full h-full flex items-center justify-center" />
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-800/75">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-500" />

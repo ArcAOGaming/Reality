@@ -1,4 +1,4 @@
-interface Theme {
+export interface Theme {
   bg: string;
   text: string;
   border: string;

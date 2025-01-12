@@ -50,7 +50,7 @@ export async function layerToImage(
     const assetUrl = new URL(`../assets/${layerName}/${layerData.style}.png`, import.meta.url).href;
     const img = new Image();
     img.src = assetUrl;
-    
+    console.log(`Loading assetUrl: ${assetUrl}`);
     await new Promise((resolve, reject) => {
       img.onload = () => {
         console.log(`Loaded image for ${layerName}: ${img.width}x${img.height}`);
