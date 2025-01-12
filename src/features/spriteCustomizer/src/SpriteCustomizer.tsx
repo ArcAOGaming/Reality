@@ -1,21 +1,30 @@
 import { useState, useEffect } from 'react'
-import ColorSlider from './components/ColorSlider'
 import PreviewCanvas from './components/PreviewCanvas'
 import ExportButton from './components/ExportButton'
 import LayerSelector from './components/LayerSelector'
-import WalkingPreview from './components/WalkingPreview'
-import { SPRITE_CATEGORIES } from './constants/spriteAssets'
 import ExportAndUploadButton from './services/testupload'
+import WalkingPreview from './components/WalkingPreview'
+import FourDirectionView from './components/FourDirectionView'
+import WarpTransition from './components/WarpTransition'
+import PurchaseModal from './components/PurchaseModal'
+import { currentTheme } from './constants/theme'
+import { SPRITE_CATEGORIES } from './constants/spriteAssets'
 import { ArconnectSigner } from '@ardrive/turbo-sdk/web'
 import logoPath from './assets/rune-realm-transparent.png'
 import { checkWalletStatus, TokenOption, purchaseAccess } from './utils/aoHelpers'
-import PurchaseModal from './components/PurchaseModal'
-import Confetti from 'react-confetti';
-import { TurboFactory } from '@ardrive/turbo-sdk/web';
-import { AdminSkinChanger } from './constants/spriteAssets';
-import { message, createDataItemSigner } from './config/aoConnection';
-import { AdminBulkUnlock } from './components/AdminBulkUnlock';
-import WarpTransition from './components/WarpTransition';
+import Confetti from 'react-confetti'
+import { TurboFactory } from '@ardrive/turbo-sdk/web'
+import { AdminSkinChanger } from './constants/spriteAssets'
+import { AdminBulkImport } from './components/AdminBulkImport'
+import { AdminBulkUnlock } from './components/AdminBulkUnlock'
+import AdminRemoveUser from './components/AdminRemoveUser'
+import TestButton from './components/TestButton'
+import CacheDebugger from './components/CacheDebugger'
+import { Link, useNavigate } from 'react-router-dom'
+// Uncomment when deploying in Reality, comment out SimpleHeader import
+// import Header from './components/Header'
+// Comment out when deploying in Reality
+import SimpleHeader from './components/SimpleHeader'
 
 interface LayerState {
   style: string;
@@ -37,6 +46,7 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
   const [error, setError] = useState<string | null>(null);
   const [signer, setSigner] = useState<any>(null);
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const [currentSkin, setCurrentSkin] = useState(null);
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -50,13 +60,18 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
   });
   const [isConnected, setIsConnected] = useState(false);
   const [showWarp, setShowWarp] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [showCustomizer, setShowCustomizer] = useState(false);
 
   const REQUIRED_PERMISSIONS = [
     'ACCESS_ADDRESS',
     'ACCESS_PUBLIC_KEY',
     'SIGN_TRANSACTION',
+    'SIGNATURE',
     'DISPATCH'
   ];
+
+  const theme = currentTheme(darkMode);
 
   useEffect(() => {
     const handleResize = () => {
@@ -70,73 +85,76 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Theme constants
-  const THEME_COLORS = {
-    light: {
-      bg: 'from-[#4A2C1E] via-[#814E33]/40 to-[#2A1912]',
-      container: 'bg-[#814E33]/20',
-      text: 'text-[#FCF5D8]',
-      border: 'border-[#F4860A]/30',
-      buttonBg: 'bg-[#814E33]/20',
-      buttonHover: 'hover:bg-[#814E33]/40',
-      gradient: 'from-[#FCF5D8] to-[#F4860A]',
-      previewBg: 'bg-[#814E33]/20'
-    },
-    dark: {
-      bg: 'from-[#0D0705] via-[#1A0F0A]/40 to-[#000000]',
-      container: 'bg-[#1A0F0A]/30',
-      text: 'text-[#FCF5D8]',
-      border: 'border-[#F4860A]/20',
-      buttonBg: 'bg-[#1A0F0A]/40',
-      buttonHover: 'hover:bg-[#1A0F0A]/60',
-      gradient: 'from-[#FCF5D8] to-[#F4860A]',
-      previewBg: 'bg-[#1A0F0A]/40'
-    }
-  };
-
-  const currentTheme = darkMode ? THEME_COLORS.dark : THEME_COLORS.light;
-
   useEffect(() => {
-    // Check if wallet is already connected on component mount
-    const checkExistingConnection = async () => {
-      console.log('SpriteCustomizer: Checking existing wallet connection');
+    const init = async () => {
       try {
         if (window.arweaveWallet) {
-          const permissions = await window.arweaveWallet.getPermissions();
-          console.log('SpriteCustomizer: Existing permissions:', permissions);
-          
-          if (permissions.includes('ACCESS_ADDRESS')) {
-            console.log('SpriteCustomizer: Wallet already connected, getting address');
-            const address = await window.arweaveWallet.getActiveAddress();
-            console.log('SpriteCustomizer: Got address:', address);
-            
-            const browserSigner = new ArconnectSigner(window.arweaveWallet);
-            setSigner(browserSigner);
-            
-            const status = await checkWalletStatus({ address });
-            console.log('SpriteCustomizer: Got wallet status:', status);
-            
-            if (!status.error) {
-              setIsUnlocked(status.isUnlocked);
-              setContractIcon(status.contractIcon);
-              setContractName(status.contractName);
-            }
+          const address = await window.arweaveWallet.getActiveAddress();
+          if (address) {
+            setSigner(new ArconnectSigner(address));
+            setIsConnected(true);
           }
         }
       } catch (error) {
-        console.error('SpriteCustomizer: Error checking existing connection:', error);
+        console.error("Connection error:", error);
       }
     };
 
-    checkExistingConnection();
+    init();
+  }, []);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        console.log('SpriteCustomizer: Checking existing wallet connection');
+        setLoading(true);
+        const browserSigner = await arweaveWallet();
+        if (browserSigner) {
+          console.log('SpriteCustomizer: Wallet connected');
+          setSigner(browserSigner);
+          const status = await checkWalletStatus();
+          setIsUnlocked(status.isUnlocked);
+          setContractIcon(status.contractIcon);
+          setContractName(status.contractName);
+          if (status.currentSkin) {
+            console.log('SpriteCustomizer: Current skin found:', status.currentSkin);
+            setCurrentSkin(status.currentSkin);
+            // If we have a valid skin, enter immediately
+            if (status.currentSkin !== "none") {
+              setShowPreview(true);
+              setShowCustomizer(true);
+              if (onEnter) {
+                setShowWarp(true);
+              }
+            }
+          }
+          setIsConnected(true);
+        } else {
+          console.log('SpriteCustomizer: No wallet connected');
+        }
+      } catch (error) {
+        console.log('SpriteCustomizer: Connection error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    init();
     initializeLayers();
   }, []);
 
   useEffect(() => {
-    const initializeWithWallet = async () => {
-      if (wallet && window.arweaveWallet) {
-        console.log('Initializing with provided wallet:', wallet);
+    if (wallet && !isConnected) {
+      const initializeWithWallet = async () => {
         try {
+<<<<<<< HEAD
+          const addr = await wallet.getActiveAddress();
+          if (addr) {
+            setIsConnected(true);
+            const browserSigner = new ArconnectSigner(wallet);
+            setSigner(browserSigner);
+            const status = await checkWalletStatus();
+=======
           // Create ArConnect signer instance without requesting connection
           const browserSigner = new ArconnectSigner(window.arweaveWallet);
           console.log('Created browser signer for wallet');
@@ -148,20 +166,29 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
           const status = await checkWalletStatus({ address: wallet });
           console.log('Initial wallet status:', status);
           if (!status.error) {
+>>>>>>> main
             setIsUnlocked(status.isUnlocked);
             setContractIcon(status.contractIcon);
             setContractName(status.contractName);
+            if (status.currentSkin) {
+              setCurrentSkin(status.currentSkin);
+              if (status.currentSkin !== "none") {
+                setShowPreview(true);
+                setShowCustomizer(true);
+                if (onEnter) {
+                  setShowWarp(true);
+                }
+              }
+            }
           }
         } catch (error) {
           console.error('Error initializing with wallet:', error);
-          setSigner(null);
-          setIsConnected(false);
         }
-      }
-    };
+      };
 
-    initializeWithWallet();
-  }, [wallet]);
+      initializeWithWallet();
+    }
+  }, [wallet, isConnected]);
 
   useEffect(() => {
     const checkConnection = async () => {
@@ -174,6 +201,16 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
             setSigner(browserSigner);
             const status = await checkWalletStatus();
             setIsUnlocked(status.isUnlocked);
+            if (status.currentSkin) {
+              setCurrentSkin(status.currentSkin);
+              if (status.currentSkin !== "none") {
+                setShowPreview(true);
+                setShowCustomizer(true);
+                if (onEnter) {
+                  setShowWarp(true);
+                }
+              }
+            }
           }
         } catch (error) {
           console.log('Not connected:', error);
@@ -279,6 +316,8 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
     }
   };
 
+<<<<<<< HEAD
+=======
   const handleUpload = async () => {
     try {
       const canvas = document.createElement('canvas');
@@ -419,12 +458,13 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
     }
   };
 
+>>>>>>> main
   const getRandomColor = () => {
     // Generate a random hex color
     return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
   };
 
-  const getRandomLayers = (availableStyles: typeof SPRITE_CATEGORIES) => {
+  const getRandomLayers = (availableStyles: any) => {
     const newLayers: Layers = {};
     
     availableStyles.forEach(category => {
@@ -489,17 +529,54 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
   };
 
   const handleSkipClick = () => {
-    setShowWarp(true);
+    if (onEnter) {
+      setShowWarp(true);
+    }
   };
 
   const handleExportComplete = () => {
-    setShowWarp(true);
+    if (onEnter) {
+      setShowWarp(true);
+    }
   };
 
   if (loading) return <div>Loading assets...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
+<<<<<<< HEAD
+    <div className="h-screen flex flex-col overflow-hidden">
+      {/* Main container with gradient background */}
+      <div className={`h-screen flex flex-col ${theme.bg}`}>
+        {/* Uncomment when deploying in Reality, comment out SimpleHeader */}
+        {/* <Header
+          theme={theme}
+          darkMode={darkMode}
+          showBackButton={!onEnter}
+          onDarkModeToggle={handleDarkModeToggle}
+        /> */}
+        {/* Comment out when deploying in Reality */}
+        <SimpleHeader 
+          theme={theme}
+          darkMode={darkMode}
+          onDarkModeToggle={handleDarkModeToggle}
+        />
+        {/* Main content area */}
+        <div className={`flex-1 w-full ${theme.container} ${theme.text} shadow-2xl ${theme.border} flex flex-col overflow-hidden`}>
+          {/* Content area */}
+          <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4 h-full overflow-hidden">
+            {/* Left column - Controls */}
+            <div className="w-full lg:w-1/3 p-2 overflow-y-auto">
+              {/* Layer Selection */}
+              <div className={`p-2 rounded-xl ${theme.container} border ${theme.border}`}>
+                <h2 className="text-lg font-bold mb-2">Layer Selection</h2>
+                <LayerSelector
+                  layers={layers}
+                  availableStyles={availableStyles}
+                  onStyleChange={handleStyleChange}
+                  onColorChange={handleColorChange}
+                />
+=======
     <div className={`min-h-screen h-screen bg-gradient-to-br ${currentTheme.bg} p-2 sm:p-4 overflow-y-auto lg:overflow-hidden relative`}>
       {showCelebration && (
         <div className="fixed inset-0 z-50 pointer-events-none">
@@ -569,30 +646,131 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
                     </div>
                   </div>
                 ))}
+>>>>>>> main
               </div>
             </div>
 
-            {/* Right column - Previews */}
-            <div className="space-y-4 overflow-y-auto">
-              <div className={`p-3 sm:p-4 rounded-xl ${currentTheme.container} border ${currentTheme.border}`}>
-                <h2 className={`text-lg font-semibold ${currentTheme.text} mb-2`}>Character Preview</h2>
-                <div className="flex justify-center">
-                  <PreviewCanvas
+            {/* Right column - Preview */}
+            <div className="w-full lg:w-2/3 p-2 flex flex-col gap-4 overflow-y-auto">
+              {/* Four Direction Preview */}
+              <div className={`flex-1 p-4 rounded-xl ${theme.container} border ${theme.border}`}>
+                <h2 className="text-lg font-bold mb-2">Character Preview</h2>
+                <div className="h-[45%] flex items-center justify-center">
+                  <FourDirectionView
                     layers={layers}
-                    onExport={handleExport}
+                    darkMode={darkMode}
                   />
                 </div>
-              </div>
-              <div className={`p-3 sm:p-4 rounded-xl ${currentTheme.container} border ${currentTheme.border}`}>
-                <h2 className={`text-lg font-semibold ${currentTheme.text} mb-2`}>Walking Preview</h2>
-                <div className="flex justify-center">
-                  <WalkingPreview layers={layers} />
+                <div className="h-[45%] flex items-center justify-center">
+                  <WalkingPreview
+                    layers={layers}
+                    darkMode={darkMode}
+                  />
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Bottom Buttons */}
+          <div className={`flex gap-3 p-4 flex-shrink-0 ${theme.container} border-t ${theme.border}`}>
+            <button
+              onClick={handleSkipClick}
+              className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 
+                ${theme.buttonBg} ${theme.buttonHover} ${theme.text} 
+                backdrop-blur-md shadow-lg hover:shadow-xl border ${theme.border}`}
+            >
+              No Thanks, Just Log Me In
+            </button>
+            <button
+              onClick={handleReset}
+              className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 
+                ${theme.buttonBg} ${theme.buttonHover} ${theme.text} 
+                backdrop-blur-md shadow-lg hover:shadow-xl border ${theme.border}`}
+            >
+              Reset All Layers
+            </button>
+            <button
+              onClick={handleRandomize}
+              className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 
+                ${theme.buttonBg} ${theme.buttonHover} ${theme.text} 
+                backdrop-blur-md shadow-lg hover:shadow-xl border ${theme.border}`}
+            >
+              Random Layers
+            </button>
+            <ExportAndUploadButton
+              id="export-upload-button"
+              layers={layers} 
+              darkMode={darkMode} 
+              mode="arweave"
+              signer={signer}
+              isUnlocked={isUnlocked}
+              onUploadStatusChange={setUploadStatus}
+              onError={setError}
+              onConnect={connectWallet}
+              onNeedUnlock={() => setIsPurchaseModalOpen(true)}
+              onUploadComplete={handleExportComplete}
+              className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 
+                ${theme.buttonBg} ${theme.buttonHover} ${theme.text} 
+                backdrop-blur-md shadow-lg hover:shadow-xl border ${theme.border}`}
+            />
+          </div>
+
+          {/* Footer */}
+          <div className={`flex justify-center items-center gap-2 py-1.5 px-3 ${theme.container} backdrop-blur-sm rounded-b-2xl border-t ${theme.border} flex-shrink-0`}>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-white/70">Powered by</span>
+              <a 
+                href="https://ar.io" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="transition-transform hover:scale-105"
+              >
+                <img 
+                  src={new URL(`./assets/ARIO-${darkMode ? 'Dark' : 'Light'}.png`, import.meta.url).href} 
+                  alt="ARIO.pn" 
+                  className="h-10" 
+                />
+              </a>
+              <span className="text-sm text-white/70">+</span>
+              <a 
+                href="https://ardrive.io/turbo" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="transition-transform hover:scale-105"
+              >
+                <img 
+                  src={new URL(`./assets/Turbo-${darkMode ? 'Dark' : 'Light'}.png`, import.meta.url).href} 
+                  alt="Turbo" 
+                  className="h-10" 
+                />
+              </a>
+              <span className="text-sm text-white/70">on</span>
+              <a 
+                href="https://game.ar.io" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="transition-transform hover:scale-105"
+              >
+                <img src={new URL('./assets/arcao.ico', import.meta.url).href} alt="arcao" className="h-10" />
+              </a>
+            </div>
+          </div>
         </div>
 
+<<<<<<< HEAD
+        {showCelebration && (
+          <div className="fixed inset-0 z-50 pointer-events-none">
+            <Confetti
+              width={windowSize.width}
+              height={windowSize.height}
+              recycle={false}
+              numberOfPieces={500}
+              gravity={0.3}
+              colors={['#F4860A', '#814E33', '#FCF5D8', '#FFD700', '#FFA500']}
+            />
+          </div>
+        )}
+=======
         {/* Footer */}
         <div className="flex gap-3 mt-4 flex-shrink-0">
           <button
@@ -636,14 +814,20 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
             onError={setError}
           />
         </div>
+>>>>>>> main
 
-        {/* Admin Bulk Unlock Section - Commented out in production */}
-          {/* <div className="mt-4">
-            <AdminBulkUnlock />
-          </div> */}
+        <PurchaseModal
+          isOpen={isPurchaseModalOpen}
+          onClose={() => setIsPurchaseModalOpen(false)}
+          onPurchase={handlePurchase}
+          contractIcon={contractIcon}
+          contractName={contractName}
+        />
 
-        {/* Status Messages */}
+        <WarpTransition show={onEnter ? showWarp : false} onComplete={handleWarpComplete} />
       </div>
+<<<<<<< HEAD
+=======
 
       {/* Footer with powered by logos */}
       <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center gap-4 py-2 px-3 bg-black/30 backdrop-blur-sm rounded-b-2xl">
@@ -680,6 +864,7 @@ const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) 
       />
 
       <WarpTransition show={showWarp} onComplete={handleWarpComplete} />
+>>>>>>> main
     </div>
   );
 };

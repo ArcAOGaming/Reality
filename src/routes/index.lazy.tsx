@@ -22,10 +22,23 @@ function Index() {
                 {/*It handeled it like this  {(wallet) => (
           <WaitlistScreen onEnter={() => setWallet(wallet)} wallet={wallet} />
         )} */}
-
+{/* 
          {(wallet) => (
           <SpriteCreator onEnter={() => setWallet(wallet)} wallet={wallet} />
-        )}
+        )} */}
+
+
+{(wallet) => {
+          if (wallet.type !== "Injected") {
+            setWallet(wallet)
+            return null; // Immediately return if the wallet type is not "Injected"
+          }
+
+          // Render SpriteCreator for 'Injected' wallet type
+          return (
+            <SpriteCreator onEnter={() => setWallet(wallet)} wallet={wallet} />
+          );
+        }}
       </WaitlistSplash>
     );
   }
