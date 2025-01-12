@@ -307,11 +307,15 @@ const WalkingPreview: React.FC<WalkingPreviewProps> = ({ layers }) => {
 
   useEffect(() => {
     // Create game instance
-    gameRef.current = new Phaser.Game({
+    const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      parent: 'walking-preview-container',
-      width: 720,
-      height: 360,
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 720,
+        height: 360,
+        parent: 'walking-preview-container',
+      },
       transparent: true,
       scene: WalkingScene,
       physics: {
@@ -320,7 +324,8 @@ const WalkingPreview: React.FC<WalkingPreviewProps> = ({ layers }) => {
           gravity: { y: 0 }
         }
       }
-    });
+    };
+    gameRef.current = new Phaser.Game(config);
 
     // Get scene reference once it's created
     gameRef.current.events.once('ready', () => {
@@ -364,8 +369,8 @@ const WalkingPreview: React.FC<WalkingPreviewProps> = ({ layers }) => {
   };
 
   return (
-    <div className="relative w-full flex items-center justify-center overflow-hidden">
-      <div id="walking-preview-container" className="w-full max-w-[720px] h-[360px] scale-[0.95]" />
+    <div className="relative w-full h-full flex items-center justify-center rounded-lg overflow-hidden">
+      <div id="walking-preview-container" className="w-full h-full flex items-center justify-center" />
       
       {/* Direction Controls - Overlaid in bottom right */}
       <div className="absolute bottom-6 right-6 grid grid-cols-3 gap-1.5 w-24">

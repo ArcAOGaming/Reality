@@ -15,9 +15,15 @@ const TestButton: React.FC<TestButtonProps> = ({ layers, darkMode = false }) => 
   const handleTest = async () => {
     try {
       console.log('Starting test...');
+      console.log(layers);
       
       // Get or create sprite sheet using cache
-      const canvas = await SpriteCacheService.getOrCreateSprite(layers, {
+      // const canvas = await SpriteCacheService.getOrCreateSprite(layers, {
+      //   width: 576, // 12 frames * 48 pixels
+      //   height: 60, // Single row height
+      //   includeBase: true
+      // });
+      const canvas = await SpriteCacheService.cacheSprite(layers, {
         width: 576, // 12 frames * 48 pixels
         height: 60, // Single row height
         includeBase: true
