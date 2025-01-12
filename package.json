@@ -23,6 +23,7 @@
     "aos-le1": "func() { aos ${1} --wallet ./.secret/deploy_llama_jwk.json --module=\"d5i1D7MmP23Lmj0OdEAo329skLsbxXSWaNFh0R8xCbE\" ; }; func"
   },
   "dependencies": {
+    "@ardrive/turbo-sdk": "^1.21.0",
     "@hookform/resolvers": "^3.4.2",
     "@othent/kms": "^1.0.12",
     "@permaweb/aoconnect": "^0.0.54",
@@ -41,7 +42,6 @@
     "@xstate/react": "^4.1.1",
     "@yornaath/batshit": "^0.10.1",
     "arweave": "^1.15.1",
-    "@ardrive/turbo-sdk": "^1.21.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "fontfaceobserver": "^2.3.0",
@@ -57,6 +57,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.5",
+    "react-router-dom": "^7.1.1",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
