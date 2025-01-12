@@ -24,9 +24,10 @@ export type AoWalletConnectionResult =
 // TODO: Import these from somewhere more official
 export type PermissionType =
   | "ACCESS_ADDRESS"
-  | "ACCESS_PUBLIC_KEY"
-  | "ACCESS_ALL_ADDRESSES"
   | "SIGN_TRANSACTION"
+  | "ACCESS_PUBLIC_KEY"
+  | "SIGNATURE"
+  | "ACCESS_ALL_ADDRESSES"
   | "ENCRYPT"
   | "DECRYPT"
   | "SIGNATURE"
