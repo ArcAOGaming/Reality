@@ -20,7 +20,6 @@ import { AdminBulkUnlock } from './components/AdminBulkUnlock';
 import AdminRemoveUser from './components/AdminRemoveUser';
 import TestButton from './components/TestButton';
 import CacheDebugger from './components/CacheDebugger';
-import { Link, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 
 interface LayerState {
@@ -38,7 +37,6 @@ interface SpriteCustomizerProps {
 }
 
 const SpriteCustomizer: React.FC<SpriteCustomizerProps> = ({ wallet, onEnter }) => {
-  const navigate = useNavigate();
   const [layers, setLayers] = useState<Layers>({});
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
