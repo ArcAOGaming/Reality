@@ -4,11 +4,17 @@ export const permissionsRequired: Array<PermissionType> = [
   "ACCESS_ADDRESS",
   "SIGN_TRANSACTION",
   "ACCESS_PUBLIC_KEY",
-  // "ENCRYPT",
-  // "DECRYPT",
+  "SIGNATURE",
+  "ACCESS_ALL_ADDRESSES",
+  "ENCRYPT",
+  "DECRYPT",
   "SIGNATURE",
   "ACCESS_ARWEAVE_CONFIG",
+<<<<<<< HEAD
   "DISPATCH"
+=======
+  "DISPATCH",
+>>>>>>> main
 ];
 
 export const permissionsRequested = [
