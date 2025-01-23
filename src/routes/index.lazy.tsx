@@ -15,10 +15,10 @@ function Index() {
   if (wallet === null) {
     return (
       <WaitlistSplash loginTitle="Sign in" temporaryWalletEnabled={true}>
-        {/* {(wallet) => {
+        {(wallet) => {
           setWallet(wallet); // Immediately set the wallet
           return null; // Skip rendering WaitlistScreen
-        }} */}
+        }}
                 {/*It handeled it like this  {(wallet) => (
           <WaitlistScreen onEnter={() => setWallet(wallet)} wallet={wallet} />
         )} */}
@@ -28,7 +28,7 @@ function Index() {
         )} */}
 
 
-{(wallet) => {
+{/* {(wallet) => {
           if (wallet.type !== "Injected") {
             setWallet(wallet)
             return null; // Immediately return if the wallet type is not "Injected"
@@ -38,7 +38,7 @@ function Index() {
           return (
             <SpriteCreator onEnter={() => setWallet(wallet)} wallet={wallet} />
           );
-        }}
+        }} */}
       </WaitlistSplash>
     );
   }
