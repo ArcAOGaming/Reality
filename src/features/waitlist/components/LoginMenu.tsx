@@ -47,7 +47,7 @@ export function LoginMenu({
         </CardHeader>
         <CardContent className="flex flex-col gap-2 items-stretch">
           <Tooltip disableHoverableContent>
-            <TooltipTrigger className="flex flex-grow">
+            <TooltipTrigger asChild>
               <Button
                 onClick={async () => {
                   const wallet = await connectInjectedWallet(

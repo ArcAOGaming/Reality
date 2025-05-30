@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { AoClient, Message, MessageResult } from "./aoClient";
 import { AoWallet } from "./aoWallet";
-import { connect } from "@permaweb/aoconnect";
+import { connect } from "./aoConnection";
 
 export class AoContractError extends Error {
   error: unknown | undefined;
@@ -248,7 +248,7 @@ export const createAoContractClient = (
 
 export const createAoContractClientForProcess =
   (wallet: AoWallet) => (processId: string) => {
-    const aoClient = connect();
+    const aoClient = connect({ CU_URL: "https://ur-cu.randao.net" });
     return createAoContractClient(processId, aoClient, wallet);
   };
 export type AoContractClientForProcess = ReturnType<

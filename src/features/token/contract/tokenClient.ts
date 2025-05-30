@@ -4,8 +4,8 @@ import {
   createAoContractClient,
 } from "../../ao/lib/aoContractClient";
 import { AoWallet } from "@/features/ao/lib/aoWallet";
-import { connect } from "@permaweb/aoconnect";
 import { TokenBalance, TokenInfo } from "./model";
+import { connect } from "@/features/ao/lib/aoConnection";
 
 export type TokenClient = {
   aoContractClient: AoContractClient;

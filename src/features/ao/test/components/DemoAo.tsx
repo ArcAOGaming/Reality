@@ -1,4 +1,4 @@
-import { connect } from "@permaweb/aoconnect";
+import { connect } from "../../lib/aoConnection";
 import { AoWallet } from "../../lib/aoWallet";
 
 type UserNew = {

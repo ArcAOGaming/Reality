@@ -1,4 +1,4 @@
-import { createDataItemSigner } from "@permaweb/aoconnect";
+import { createDataItemSigner } from "../aoConnection";
 import { AoWalletConnector, ConnectConfig } from "../aoWallet";
 import { ArweaveAddress } from "@/features/arweave/lib/model";
 

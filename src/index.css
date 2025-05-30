@@ -83,3 +83,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile screen rotation */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  #root {
+    transform: rotate(90deg);
+    transform-origin: 50% 50%;
+    position: absolute;
+    width: 100vh;
+    height: 100vw;
+    top: calc((100vh - 100vw) / 2);
+    left: calc((100vw - 100vh) / 2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

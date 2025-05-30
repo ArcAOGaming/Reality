@@ -1,3 +1,4 @@
+import { connect } from "@/features/ao/lib/aoConnection";
 import {
   AoContractClient,
   createAoContractClient,
@@ -5,7 +6,6 @@ import {
 import { AoWallet } from "../../ao/lib/aoWallet";
 import { ArweaveTxId } from "../../arweave/lib/model";
 import { WaitlistState } from "./model";
-import { connect } from "@permaweb/aoconnect";
 
 export type WaitlistClient = {
   aoContractClient: AoContractClient;

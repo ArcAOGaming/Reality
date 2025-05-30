@@ -1,8 +1,8 @@
-import { createDataItemSigner } from "@permaweb/aoconnect";
 import { AoWalletConnector } from "../aoWallet";
 import { connect } from "@othent/kms";
 import * as Othent from "@othent/kms";
 import { ArweaveAddress } from "@/features/arweave/lib/model";
+import { createDataItemSigner } from "@/features/spriteCustomizer/src/config/aoConnection";
 
 export const connectOthentWallet: AoWalletConnector = async (
   _,

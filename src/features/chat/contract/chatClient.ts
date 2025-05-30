@@ -1,3 +1,4 @@
+import { connect } from "@/features/ao/lib/aoConnection";
 import { MessageId } from "../../ao/lib/aoClient";
 import {
   AoContractClient,
@@ -5,7 +6,6 @@ import {
 } from "../../ao/lib/aoContractClient";
 import { ChatMessageCreate, ChatMessageHistory } from "./model";
 import { AoWallet } from "@/features/ao/lib/aoWallet";
-import { connect } from "@permaweb/aoconnect";
 
 type HistoryQuery = {
   idAfter?: number;
