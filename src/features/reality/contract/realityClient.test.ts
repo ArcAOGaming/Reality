@@ -6,10 +6,10 @@ import {
 } from "@/features/ao/lib/aoContractClient";
 import { loadTestWallet } from "@/features/ao/test/lib/fsWallet";
 import { AoWallet } from "@/features/ao/lib/aoWallet";
-import { connect } from "@permaweb/aoconnect";
 import { ArweaveId } from "@/features/arweave/lib/model";
 import { createGeneratedWallet } from "@/features/ao/lib/wallets/generated";
 import { dummyConnectConfig } from "@/features/login/lib/config";
+import { connect } from "@/features/ao/lib/aoConnection";
 
 describe("createRealityClient", () => {
   let testWallet: AoWallet;

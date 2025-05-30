@@ -1,8 +1,8 @@
-import { connect } from "@permaweb/aoconnect";
 import { profileAOS } from "./config";
 import { AoWallet } from "@/features/ao/lib/aoWallet";
 import { createProfileClientForProcess } from "./profileClient";
 import { ProfileInfoCreate } from "./model";
+import { connect } from "@/features/ao/lib/aoConnection";
 
 export const spawnProfileProcess = async (
   wallet: AoWallet,

@@ -1,3 +1,4 @@
+import { connect } from "@/features/ao/lib/aoConnection";
 import { MessageId } from "../../ao/lib/aoClient";
 import {
   AoContractClient,
@@ -12,7 +13,6 @@ import {
   RealityParameters,
 } from "./model";
 import { AoWallet } from "@/features/ao/lib/aoWallet";
-import { connect } from "@permaweb/aoconnect";
 
 export type RealityClient = {
   aoContractClient: AoContractClient;

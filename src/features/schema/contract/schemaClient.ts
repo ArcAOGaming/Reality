@@ -1,10 +1,10 @@
+import { connect } from "@/features/ao/lib/aoConnection";
 import {
   AoContractClient,
   createAoContractClient,
 } from "../../ao/lib/aoContractClient";
 import { Schema, SchemaExternal } from "./model";
 import { AoWallet } from "@/features/ao/lib/aoWallet";
-import { connect } from "@permaweb/aoconnect";
 
 export type SchemaClient = {
   aoContractClient: AoContractClient;

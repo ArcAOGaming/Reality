@@ -1,4 +1,4 @@
-import { connect, result } from "@permaweb/aoconnect";
+import { connect, result } from "./aoConnection";
 
 export type MessageId = string;
 

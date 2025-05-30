@@ -1,4 +1,4 @@
-import { createDataItemSigner } from "@permaweb/aoconnect";
+import { createDataItemSigner } from "@/features/spriteCustomizer/src/config/aoConnection";
 import { WalletType } from "./wallets";
 
 export type AoSigner = ReturnType<typeof createDataItemSigner>;

@@ -6,8 +6,8 @@ import {
 } from "@/features/ao/lib/aoContractClient";
 import { loadTestWallet } from "@/features/ao/test/lib/fsWallet";
 import { AoWallet } from "@/features/ao/lib/aoWallet";
-import { connect } from "@permaweb/aoconnect";
 import { Schema } from "./model";
+import { connect } from "@/features/ao/lib/aoConnection";
 
 describe("createSchemaClient", () => {
   let testWallet: AoWallet;

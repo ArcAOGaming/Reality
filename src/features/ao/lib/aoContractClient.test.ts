@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { createAoContractClient } from "./aoContractClient";
 import { loadTestWallet } from "../test/lib/fsWallet";
-import { connect } from "@permaweb/aoconnect";
+import { connect } from "./aoConnection";
 
 describe("createAoContractClient", () => {
   test("creates client", async () => {

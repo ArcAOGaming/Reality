@@ -3,11 +3,11 @@ import {
   createAoContractClient,
 } from "../../ao/lib/aoContractClient";
 import { AoWallet } from "@/features/ao/lib/aoWallet";
-import { connect } from "@permaweb/aoconnect";
 import { profileAOS } from "./config";
 import { fetchUrl } from "@/features/arweave/lib/arweave";
 import { ProfileInfoCreate } from "./model";
 import { MessageResult } from "@/features/ao/lib/aoClient";
+import { connect } from "@/features/ao/lib/aoConnection";
 
 export type ProfileClient = {
   aoContractClient: AoContractClient;
